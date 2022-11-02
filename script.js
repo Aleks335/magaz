@@ -4,8 +4,12 @@ const selector = {
     index:'.index',
     name:'.name',
     price:'.price',
-    tr : '.tr',
+    container : '.tr',
     button:'.button',
+}
+const selector2 = {
+    template:'.tovTemplate',
+    container:'.tovLi',
 }
 
 const tbody = document.querySelector('.tbody');
@@ -14,35 +18,46 @@ const tovUl = document.querySelector('.tovUl');
 
 new CreatProductForm('.form', createProductRequest, getProductsRequest, '.formName','.formPrice');
 
+
+function renderNewProducts(newProducts) {
+    let sum = 0;
+    newProducts.forEach((i, index) => {
+        const Prod = new NewProduct(selector, i.name, i.price, index, i.product_id, deleteProductRequest);
+        tbody.append(Prod.getContainer());
+        sum += i.price;
+    });
+    document.querySelector('.total').innerHTML = sum;
+}
+
+function renderOldProducts(oldProducts) {
+    let sumUl=0;
+    oldProducts.forEach((a)=>{
+        const OldProd = new OldProduct(selector2, a.name, a.price);
+        tovUl.append(OldProd.getContainer());
+        sumUl += a.price;
+    })
+    document.querySelector('.ulItogo').innerHTML = sumUl;
+}
+
+
 getProductsRequest();
 async function getProductsRequest() {
     table = document.querySelector('.table');
     const rezFetc = await fetch(`http://f0428517.xsph.ru/a_shop2/get_products.php`);
     const js = await rezFetc.json();
-    let sum = 0;
     let len= document.querySelectorAll('.tr').length;
     let len2= document.querySelectorAll('.tovLi').length;
     rest(len, '.tr');
     rest(len2, '.tovLi');
+
     if(js.newProducts !== null){
-        js.newProducts.forEach((i, index)=>{
-        const Prod = new Product(selector, i.name, i.price, index, i.product_id, deleteProductRequest);
-        tbody.append(Prod.gettr());
-        sum +=i.price;
-    })
+        renderNewProducts(js.newProducts);
     }else alert('Список пуст!')
-    let sumUl=0;
+
     if(js.oldProducts !== null){
-        js.oldProducts.forEach((a)=>{
-            if (a.quantity === 1) {
-                const OldProd = new OldProduct(a.name, a.price);
-                tovUl.append(OldProd.getLi());
-                sumUl += a.price;
-            }
-        })
+        renderOldProducts(js.oldProducts);
     }else alert('Список пуст!');
-    document.querySelector('.total').innerHTML = sum;
-    document.querySelector('.ulItogo').innerHTML = sumUl;
+
 }
 
 
@@ -54,7 +69,6 @@ function rest(len, priz) {
         }
     }
 }
-
 
 async function deleteProductRequest(ID) {
     const ttt = await fetch('http://f0428517.xsph.ru/a_shop2/delete_product.php', {
