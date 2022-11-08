@@ -1,4 +1,4 @@
-class CreatProductForm {
+export class CreatProductForm {
     constructor(form, createProductRequest, getProductsRequest, formName, formPrice) {
         this._form = document.querySelector(form);
         this._name = document.querySelector(formName);

@@ -1,4 +1,5 @@
-class NewProduct  extends Product{
+import {Product} from "./Product.js";
+export class NewProduct  extends Product{
     constructor(selector, name, price, index, product_id, deleteProductRequest) {
         super(selector, name, price);
         this._addHtml(index, name, price);

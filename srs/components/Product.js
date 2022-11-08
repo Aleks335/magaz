@@ -1,4 +1,4 @@
-class Product {
+export class Product {
     constructor(selector, name, price) {
         this._setDomPrefs(selector);
         this._name = name;
